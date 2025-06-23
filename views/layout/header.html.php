@@ -38,6 +38,16 @@
                                 <li><a class="dropdown-item" href="index.php?controller=classe&action=list-classe">
                                     <i class="fas fa-chalkboard me-1"></i>Classes
                                 </a></li>
+                                <li><a class="dropdown-item" href="index.php?controller=professeur&action=list-professeurs">
+                                    <i class="fas fa-chalkboard-teacher me-1"></i>Professeurs
+                                </a></li>
+                                <li><a class="dropdown-item" href="index.php?controller=module&action=list-modules">
+                                    <i class="fas fa-book me-1"></i>Modules
+                                </a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="index.php?controller=demande&action=list-demandes">
+                                    <i class="fas fa-clipboard-list me-1"></i>Demandes
+                                </a></li>
                                 <li><a class="dropdown-item" href="index.php?controller=dashboard&action=statistiques">
                                     <i class="fas fa-chart-bar me-1"></i>Statistiques
                                 </a></li>
@@ -45,7 +55,7 @@
                         </li>
                         <?php endif; ?>
                         
-                        <?php if($_SESSION['user']->getRole() == 'ATTACHE' || $_SESSION['user']->getRole() == 'RP'): ?>
+                        <?php if($_SESSION['user']->getRole() == 'ATTACHE'): ?>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                                 <i class="fas fa-users me-1"></i>Étudiants
@@ -56,6 +66,34 @@
                                 </a></li>
                                 <li><a class="dropdown-item" href="index.php?controller=inscription&action=form-inscription">
                                     <i class="fas fa-user-plus me-1"></i>Inscriptions
+                                </a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="index.php?controller=demande&action=list-demandes">
+                                    <i class="fas fa-clipboard-list me-1"></i>Demandes étudiants
+                                </a></li>
+                            </ul>
+                        </li>
+                        <?php endif; ?>
+
+                        <?php if($_SESSION['user']->getRole() == 'PROFESSEUR'): ?>
+                        <li class="nav-item">
+                            <a class="nav-link" href="index.php?controller=professeur&action=mes-classes">
+                                <i class="fas fa-chalkboard me-1"></i>Mes Classes
+                            </a>
+                        </li>
+                        <?php endif; ?>
+
+                        <?php if($_SESSION['user']->getRole() == 'ETUDIANT'): ?>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-clipboard-list me-1"></i>Mes Demandes
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="index.php?controller=demande&action=mes-demandes">
+                                    <i class="fas fa-list me-1"></i>Consulter mes demandes
+                                </a></li>
+                                <li><a class="dropdown-item" href="index.php?controller=demande&action=form-demande">
+                                    <i class="fas fa-plus me-1"></i>Nouvelle demande
                                 </a></li>
                             </ul>
                         </li>

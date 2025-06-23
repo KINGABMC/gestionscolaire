@@ -76,18 +76,88 @@ class InscriptionRepository {
                      WHERE i.statut = 'ACTIVE' 
                      GROUP BY i.annee_scolaire, e.sexe";
             $cursor2 = Database::getPdo()->query($sql2);
-            $repartitionSexe = [];
+            $repartitionSexeAnnee = [];
             while ($row = $cursor2->fetch()) {
-                $repartitionSexe[] = $row;
+                $repartitionSexeAnnee[] = $row;
+            }
+
+            // Effectif par classe
+            $sql3 = "SELECT c.libelle, c.filiere, COUNT(*) as effectif 
+                     FROM inscriptions i 
+                     JOIN classes c ON i.classe_id = c.id 
+                     WHERE i.statut = 'ACTIVE' AND i.annee_scolaire = '2024-2025'
+                     GROUP BY c.id, c.libelle, c.filiere";
+            $cursor3 = Database::getPdo()->query($sql3);
+            $effectifParClasse = [];
+            while ($row = $cursor3->fetch()) {
+                $effectifParClasse[] = $row;
+            }
+
+            // Répartition par sexe et classe
+            $sql4 = "SELECT c.libelle, e.sexe, COUNT(*) as nombre 
+                     FROM inscriptions i 
+                     JOIN classes c ON i.classe_id = c.id 
+                     JOIN etudiants e ON i.etudiant_id = e.id 
+                     WHERE i.statut = 'ACTIVE' AND i.annee_scolaire = '2024-2025'
+                     GROUP BY c.id, c.libelle, e.sexe";
+            $cursor4 = Database::getPdo()->query($sql4);
+            $repartitionSexeClasse = [];
+            while ($row = $cursor4->fetch()) {
+                $repartitionSexeClasse[] = $row;
+            }
+
+            // Suspensions et annulations par année
+            $sql5 = "SELECT i.annee_scolaire,
+                            SUM(CASE WHEN i.statut = 'SUSPENDUE' THEN 1 ELSE 0 END) as suspensions,
+                            SUM(CASE WHEN i.statut = 'ANNULEE' THEN 1 ELSE 0 END) as annulations
+                     FROM inscriptions i 
+                     GROUP BY i.annee_scolaire";
+            $cursor5 = Database::getPdo()->query($sql5);
+            $suspensionsAnnulations = [];
+            while ($row = $cursor5->fetch()) {
+                $suspensionsAnnulations[] = $row;
             }
 
             return [
                 'effectifParAnnee' => $effectifParAnnee,
-                'repartitionSexe' => $repartitionSexe
+                'repartitionSexeAnnee' => $repartitionSexeAnnee,
+                'effectifParClasse' => $effectifParClasse,
+                'repartitionSexeClasse' => $repartitionSexeClasse,
+                'suspensionsAnnulations' => $suspensionsAnnulations,
+                'totalEtudiants' => count($effectifParAnnee) > 0 ? array_sum(array_column($effectifParAnnee, 'effectif')) : 0,
+                'totalClasses' => count($effectifParClasse),
+                'totalProfesseurs' => $this->countProfesseurs(),
+                'totalModules' => $this->countModules()
             ];
         } catch (\PDOException $ex) {
             print $ex->getMessage()."\n";
         }
         return [];
+    }
+
+    private function countProfesseurs(): int {
+        try {
+            $sql = "SELECT COUNT(*) as count FROM users WHERE role = 'PROFESSEUR'";
+            $cursor = Database::getPdo()->query($sql);
+            if($row = $cursor->fetch()) {
+                return $row['count'];
+            }
+        } catch (\PDOException $ex) {
+            print $ex->getMessage()."\n";
+        }
+        return 0;
+    }
+
+    private function countModules(): int {
+        try {
+            $sql = "SELECT COUNT(*) as count FROM modules";
+            $cursor = Database::getPdo()->query($sql);
+            if($row = $cursor->fetch()) {
+                return $row['count'];
+            }
+        } catch (\PDOException $ex) {
+            print $ex->getMessage()."\n";
+        }
+        return 0;
     }
 }

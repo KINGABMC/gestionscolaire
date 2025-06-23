@@ -31,6 +31,18 @@ switch ($controller) {
         require_once "../src/controllers/InscriptionController.php";
         $controllerInstance = new InscriptionController();
         break;
+    case 'demande':
+        require_once "../src/controllers/DemandeController.php";
+        $controllerInstance = new DemandeController();
+        break;
+    case 'professeur':
+        require_once "../src/controllers/ProfesseurController.php";
+        $controllerInstance = new ProfesseurController();
+        break;
+    case 'module':
+        require_once "../src/controllers/ModuleController.php";
+        $controllerInstance = new ModuleController();
+        break;
     default:
         require_once "../src/controllers/DashboardController.php";
         $controllerInstance = new DashboardController();

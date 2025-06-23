@@ -70,9 +70,10 @@
                         <div class="mt-4">
                             <h6 class="text-muted">Comptes de test :</h6>
                             <small class="text-muted">
-                                <strong>RP:</strong> rp@ism.sn / password<br>
-                                <strong>Attaché:</strong> attache@ism.sn / password<br>
-                                <strong>Professeur:</strong> prof@ism.sn / password
+                                <strong>RP:</strong> rp@ism.sn / 2011<br>
+                                <strong>Attaché:</strong> attache@ism.sn / 201000<br>
+                                <strong>Professeur:</strong> prof@ism.sn / 2010<br>
+                                <strong>Étudiant:</strong> etudiant@ism.sn / password
                             </small>
                         </div>
                     </div>

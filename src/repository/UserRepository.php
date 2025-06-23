@@ -14,11 +14,13 @@ class UserRepository {
             $email = $user->getEmail();
             $password = $user->getPassword();
             $role = $user->getRole();
+            $grade = $user->getGrade();
             $dateCreation = $user->getDateCreation()->format("Y-m-d H:i:s");
             
-            $sql = "INSERT INTO `users` (`nom`, `prenom`, `email`, `password`, `role`, `dateCreation`) 
-                    VALUES ('$nom', '$prenom', '$email', '$password', '$role', '$dateCreation')";
-            return Database::getPdo()->exec($sql);
+            $sql = "INSERT INTO `users` (`nom`, `prenom`, `email`, `password`, `role`, `grade`, `dateCreation`) 
+                    VALUES ('$nom', '$prenom', '$email', '$password', '$role', '$grade', '$dateCreation')";
+            Database::getPdo()->exec($sql);
+            return Database::getPdo()->lastInsertId();
         } catch (\PDOException $ex) {
             print $ex->getMessage()."\n";
         }
@@ -38,9 +40,13 @@ class UserRepository {
         return null;
     }
 
-    public function selectByRole(string $role): array {
+    public function selectByRole(string $role, string $nom = ""): array {
         try {
-            $sql = "SELECT * FROM users WHERE role = '$role'";
+            $where = "WHERE role = '$role'";
+            if($nom != "") {
+                $where .= " AND (nom LIKE '%$nom%' OR prenom LIKE '%$nom%')";
+            }
+            $sql = "SELECT * FROM users $where ORDER BY nom, prenom";
             $cursor = Database::getPdo()->query($sql);
             $users = [];
             while ($row = $cursor->fetch()) {
@@ -51,5 +57,18 @@ class UserRepository {
             print $ex->getMessage()."\n";
         }
         return [];
+    }
+
+    public function selectById(int $id): User|null {
+        try {
+            $sql = "SELECT * FROM users WHERE id = $id";
+            $cursor = Database::getPdo()->query($sql);
+            if($row = $cursor->fetch()) {
+                return User::of($row);
+            }
+        } catch (\PDOException $ex) {
+            print $ex->getMessage()."\n";
+        }
+        return null;
     }
 }

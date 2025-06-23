@@ -6,6 +6,7 @@ class User{
     private string $email;
     private string $password;
     private string $role; // RP, ATTACHE, PROFESSEUR, ETUDIANT
+    private string $grade; // Pour les professeurs
     private DateTime $dateCreation;
 
     public function __construct(string $nom="", string $prenom="", string $email="", string $password="", string $role="")
@@ -15,6 +16,7 @@ class User{
         $this->email = $email;
         $this->password = $password;
         $this->role = $role;
+        $this->grade = "";
         $this->dateCreation = new DateTime();
     }
 
@@ -34,6 +36,9 @@ class User{
         $user->setEmail($row['email']);
         $user->setPassword($row['password']);
         $user->setRole($row['role']);
+        if(isset($row['grade'])) {
+            $user->setGrade($row['grade']);
+        }
         $user->setDateCreation(new DateTime($row['dateCreation']));
         return $user;
     }
@@ -56,6 +61,9 @@ class User{
     
     public function getRole(): string { return $this->role; }
     public function setRole(string $role): void { $this->role = $role; }
+    
+    public function getGrade(): string { return $this->grade; }
+    public function setGrade(string $grade): void { $this->grade = $grade; }
     
     public function getDateCreation(): DateTime { return $this->dateCreation; }
     public function setDateCreation(DateTime $dateCreation): void { $this->dateCreation = $dateCreation; }
